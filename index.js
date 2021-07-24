@@ -4,7 +4,13 @@ const fs = require("fs");
 const app = express();
 const output = require("./output.json");
 const PORT = 8000;
+const cors = require("cors");
 app.use(express.json());
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 
 app.get("/", (req, res) => {
   res.send("hemlo");
@@ -21,6 +27,7 @@ const execPromise = (ipAddress) =>
   });
 
 const updateOutput = async (ipAddresses) => {
+  if (!ipAddresses) return;
   const promises = ipAddresses.map((ipAddress) => execPromise(ipAddress));
   const responses = await Promise.allSettled(promises);
   const time = new Date();
@@ -42,8 +49,7 @@ const updateOutput = async (ipAddresses) => {
           newObject.os = "Unknown";
       }
       newObject.os = values[1] === "64" ? "Linux" : "Windows";
-      if (!newObject.last_seen || newObject.last_seen.status === "offline")
-        newObject.last_seen = { status: "online", time };
+      newObject.last_seen = { status: "online", time };
 
       output[values[0]] = newObject;
     } else {
