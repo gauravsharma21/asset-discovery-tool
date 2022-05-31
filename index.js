@@ -12,10 +12,6 @@ app.use(
   })
 );
 
-app.get("/", (req, res) => {
-  res.send("hemlo");
-});
-
 const execPromise = (ipAddress) =>
   new Promise((resolve, reject) => {
     exec(`sh script.sh ${ipAddress}`, (error, stdout, stderr) => {
